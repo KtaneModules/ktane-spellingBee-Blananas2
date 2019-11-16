@@ -1,1 +1,1 @@
-ktane-spellingBee
+#[ModKit Wiki](../../wiki)
