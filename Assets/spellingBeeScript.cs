@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 using KModkit;
 
@@ -135,5 +136,174 @@ public class spellingBeeScript : MonoBehaviour {
             currentText = "";
             word.text = currentText;
         }
+    }
+
+    //twitch plays
+    private bool cmdIsValid(string s)
+    {
+        string[] valids = { "A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z" };
+        if(s.Length < 1 || s.Length > 19)
+        {
+            return false;
+        }
+        for(int i = 0; i < s.Length; i++)
+        {
+            if (!valids.Contains(s.ElementAt(i) + "")){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} play [Presses the play button] | !{0} submit <word> [Submits the specified word] | Submitted words must be in all caps";
+    #pragma warning restore 414
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        if (Regex.IsMatch(command, @"^\s*play\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant) || Regex.IsMatch(command, @"^\s*press play\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            play.OnInteract();
+            yield break;
+        }
+        string[] parameters = command.Split(' ');
+        if (Regex.IsMatch(parameters[0], @"^\s*submit\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            if(parameters.Length == 2)
+            {
+                if (cmdIsValid(parameters[1]))
+                {
+                    yield return null;
+                    if (!typing)
+                    {
+                        yield return "sendtochaterror The play button must be pressed before a submittion can be made!";
+                        yield break;
+                    }
+                    red.OnInteract();
+                    for(int i = 0; i < parameters[1].Length; i++)
+                    {
+                        yield return new WaitForSeconds(0.1f);
+                        string comparer = parameters[1].ElementAt(i) + "";
+                        comparer = comparer.ToLower();
+                        if (comparer.Equals("q"))
+                        {
+                            keyboard[0].OnInteract();
+                        }
+                        else if (comparer.Equals("w"))
+                        {
+                            keyboard[1].OnInteract();
+                        }
+                        else if (comparer.Equals("e"))
+                        {
+                            keyboard[2].OnInteract();
+                        }
+                        else if (comparer.Equals("r"))
+                        {
+                            keyboard[3].OnInteract();
+                        }
+                        else if (comparer.Equals("t"))
+                        {
+                            keyboard[4].OnInteract();
+                        }
+                        else if (comparer.Equals("y"))
+                        {
+                            keyboard[5].OnInteract();
+                        }
+                        else if (comparer.Equals("u"))
+                        {
+                            keyboard[6].OnInteract();
+                        }
+                        else if (comparer.Equals("i"))
+                        {
+                            keyboard[7].OnInteract();
+                        }
+                        else if (comparer.Equals("o"))
+                        {
+                            keyboard[8].OnInteract();
+                        }
+                        else if (comparer.Equals("p"))
+                        {
+                            keyboard[9].OnInteract();
+                        }
+                        else if (comparer.Equals("a"))
+                        {
+                            keyboard[10].OnInteract();
+                        }
+                        else if (comparer.Equals("s"))
+                        {
+                            keyboard[11].OnInteract();
+                        }
+                        else if (comparer.Equals("d"))
+                        {
+                            keyboard[12].OnInteract();
+                        }
+                        else if (comparer.Equals("f"))
+                        {
+                            keyboard[13].OnInteract();
+                        }
+                        else if (comparer.Equals("g"))
+                        {
+                            keyboard[14].OnInteract();
+                        }
+                        else if (comparer.Equals("h"))
+                        {
+                            keyboard[15].OnInteract();
+                        }
+                        else if (comparer.Equals("j"))
+                        {
+                            keyboard[16].OnInteract();
+                        }
+                        else if (comparer.Equals("k"))
+                        {
+                            keyboard[17].OnInteract();
+                        }
+                        else if (comparer.Equals("l"))
+                        {
+                            keyboard[18].OnInteract();
+                        }
+                        else if (comparer.Equals("z"))
+                        {
+                            keyboard[19].OnInteract();
+                        }
+                        else if (comparer.Equals("x"))
+                        {
+                            keyboard[20].OnInteract();
+                        }
+                        else if (comparer.Equals("c"))
+                        {
+                            keyboard[21].OnInteract();
+                        }
+                        else if (comparer.Equals("v"))
+                        {
+                            keyboard[22].OnInteract();
+                        }
+                        else if (comparer.Equals("b"))
+                        {
+                            keyboard[23].OnInteract();
+                        }
+                        else if (comparer.Equals("n"))
+                        {
+                            keyboard[24].OnInteract();
+                        }
+                        else if (comparer.Equals("m"))
+                        {
+                            keyboard[25].OnInteract();
+                        }
+                    }
+                    yield return new WaitForSeconds(0.1f);
+                    green.OnInteract();
+                }
+            }
+            yield break;
+        }
+    }
+
+    IEnumerator TwitchHandleForcedSolve()
+    {
+        if (!typing)
+        {
+            yield return ProcessTwitchCommand("play");
+        }
+        yield return ProcessTwitchCommand("submit " + wordList[chosenWord].ToUpper());
     }
 }
