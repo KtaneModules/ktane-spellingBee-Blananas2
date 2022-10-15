@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,7 @@ public class spellingBeeScript : MonoBehaviour {
 
     public KMBombInfo Bomb;
     public KMAudio Audio;
+    public KMSelectable ModuleSelectable;
 
     public KMSelectable[] keyboard;
     public KMSelectable play;
@@ -24,6 +25,13 @@ public class spellingBeeScript : MonoBehaviour {
     string alphabet = "qwertyuiopasdfghjklzxcvbnm";
     string currentText = "";
     float endTime = 0;
+    private KeyCode[] TheKeys =
+	{
+        KeyCode.Q, KeyCode.W, KeyCode.E, KeyCode.R, KeyCode.T, KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P,
+        KeyCode.A, KeyCode.S, KeyCode.D, KeyCode.F, KeyCode.G, KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L,
+        KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V, KeyCode.B, KeyCode.N, KeyCode.M, KeyCode.Return
+	};
+    private bool focused = false;
 
     //Logging
     static int moduleIdCounter = 1;
@@ -32,6 +40,12 @@ public class spellingBeeScript : MonoBehaviour {
 
     void Awake () {
         moduleId = moduleIdCounter++;
+        if (Application.isEditor)
+        {
+            focused = true;
+        }
+        ModuleSelectable.OnFocus += delegate () { focused = true; };
+        ModuleSelectable.OnDefocus += delegate () { focused = false; };
         
         foreach (KMSelectable key in keyboard) {
             KMSelectable pressedKey = key;
@@ -61,6 +75,15 @@ public class spellingBeeScript : MonoBehaviour {
                 chosenWord = UnityEngine.Random.Range(0, 100);
                 typing = false;
                 word.text = "spelling bee";
+            }
+            for (int i = 0; i < TheKeys.Count(); i++) {
+                if (Input.GetKeyDown(TheKeys[i])) {
+                    if (i == 26) {
+                        GreenButton();
+                    } else {
+                        keyPress(keyboard[i]);
+                    }
+                }
             }
         }
 	}
