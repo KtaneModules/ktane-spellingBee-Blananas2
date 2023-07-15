@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -65,7 +65,7 @@ public class spellingBeeScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (typing == true)
+		if (typing)
         {
             timer.text = (Mathf.Floor(Bomb.GetTime() - endTime)).ToString();
             if (Mathf.Floor(Bomb.GetTime() - endTime) < 1)
@@ -76,6 +76,7 @@ public class spellingBeeScript : MonoBehaviour {
                 typing = false;
                 word.text = "spelling bee";
             }
+            if (!focused) { return; }
             for (int i = 0; i < TheKeys.Count(); i++) {
                 if (Input.GetKeyDown(TheKeys[i])) {
                     if (i == 26) {
